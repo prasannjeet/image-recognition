@@ -1,0 +1,250 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Exercise 4 - Classifying the BM-Dataset</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-14"><meta name="DC.source" content="Exercise4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Exercise 4 - Classifying the BM-Dataset</h1><!--introduction--><p>Submitted by <b>Prasannjeet Singh</b></p><p>
+  <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">1. Plotting the Dataset</a></li><li><a href="#2">2. Running <b>fitcsvm()</b> with chosen hyperparameters</a></li><li><a href="#3">3. Plotting Decision Boundary</a></li><li><a href="#6">4. Observation with Complete Data:</a></li></ul></div><h2 id="1">1. Plotting the Dataset</h2><p>Note that I have used only 10,000 datasets to reduce the time taken to run the project. However, I have also performed the same with complete dataset and saved the result. Those are also displayed at the bottom.</p><pre class="codeinput"><span class="comment">% Loading the dataset</span>
+load <span class="string">BM.mat</span>
+<span class="comment">% Cropping the dataset to first ten thousand items</span>
+X = batmanX(1:10000,:);
+Y = num2cell(num2str(batmany(1:10000,:)));
+hFig = figure(1);
+gscatter(X(:,1),X(:,2),Y);
+title(<span class="string">'Scatter Diagram of Batman (Partial Data)'</span>);
+axis <span class="string">tight</span>;
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise4_01.png" alt=""> <h2 id="2">2. Running <b>fitcsvm()</b> with chosen hyperparameters</h2><p>Following hyperparameters were used to make the decision boundary as precise without taking much time:</p><div><ol><li>KernelFunction: gaussian</li><li>BoxConstant: 1</li><li>KernelScale: 1</li></ol></div><pre class="codeinput">classes = unique(Y);
+rng(1); <span class="comment">% For reproducibility</span>
+SVMModels = fitcsvm(X,Y,<span class="string">'KernelFunction'</span>,<span class="string">'gaussian'</span>,<span class="string">'BoxConstraint'</span>,1,<span class="string">'KernelScale'</span>,1.5);
+</pre><h2 id="3">3. Plotting Decision Boundary</h2><p>Creating a Mesh-Grid (x-y axis) from min value of x to max value of x with a separation of 0.02:</p><pre class="codeinput">d = 0.02;
+[x1Grid,x2Grid] = meshgrid(min(X(:,1)):d:max(X(:,1)),min(X(:,2)):d:max(X(:,2)));
+xGrid = [x1Grid(:),x2Grid(:)];
+<span class="comment">% Predicting for all the values in the mesh grid</span>
+maxScore = predict(SVMModels,xGrid);
+<span class="comment">% Plotting the Batman Decision boundary:</span>
+f1 = figure(3);
+gscatter(xGrid(:,1),xGrid(:,2),maxScore,[0.1 0.5 0.5; 0.5 0.1 0.5]);
+title(<span class="string">'The Batman Decision Boundary'</span>);
+axis <span class="string">tight</span>;
+snapnow;
+close(f1);
+</pre><img vspace="5" hspace="5" src="Exercise4_02.png" alt=""> <p><b>Training Error Rate</b></p><pre class="codeinput">trainingError = sum(str2num(cell2mat(predict(SVMModels,X))) ~= batmany(1:10000))
+trainingErrorRate = trainingError/size(X,1)*100
+</pre><pre class="codeoutput">
+trainingError =
+
+   174
+
+
+trainingErrorRate =
+
+    1.7400
+
+</pre><p>Therefore, it can be observed that current model has only 174 errors out of a total of 10000 datasets, with the training error rate of 1.74 percent.</p><h2 id="6">4. Observation with Complete Data:</h2><p>Following hyperparameters were used which made nicer decision boundaries, but took huge time. Note that to make a sharp decision boundary we are basically trying to <b>overfit</b> our model. And in that case, we have to impose huge penalty if any point tries to cross the margins. And we can impose higher penalty by increasing the parameter <b>BoxConstant</b>. However, an increase in BoxConstant results in increased run time of the algorithm.</p><div><ol><li>KernelFunction: gaussian</li><li>BoxConstant: 20</li><li>KernelScale: 0.2</li></ol></div><p>Loading the data to showcase the results:</p><p>The data contains both fitcsv model and the predicted solution to make the decision boundary. However, the model will not be used as I have already predicted the boundaries to save time.</p><pre class="codeinput">load <span class="string">Data/batmodel.mat</span>;
+hFig = figure(4);
+set(hFig, <span class="string">'Position'</span>, [0 0 1500 500]);
+subplot(1,2,1);
+gscatter(batmanX(:,1), batmanX(:,2), batmany);
+title(<span class="string">'Scatter for complete Batman data'</span>);
+axis <span class="string">tight</span>;
+subplot(1,2,2);
+gscatter(xGrid(:,1),xGrid(:,2),batscore,[0.1 0.5 0.5; 0.5 0.1 0.5]);
+title(<span class="string">'Decision boundary with improved hyperparameters'</span>);
+axis <span class="string">tight</span>;
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise4_03.png" alt=""> <p><b>Training Error Rate</b></p><p>Since we have tried to overfit the data, we expect lower training error rate than what we got below. Training error rate can be calculate via the following code:</p><pre class="codeinput"><span class="comment">% trainingError = sum(str2num(cell2mat(predict(BatModel,batmanX))) ~= batmany)</span>
+<span class="comment">% trainingErrorRate = trainingError/size(batmanX,1)*100</span>
+</pre><p>However, since it takes time, I have already calculated it and the training error, on a total of 100,000 training set turned out to be only 107, with a training error rate of <b>0.107%</b>, which is noticeably lower than our previous calculation.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Exercise 4 - Classifying the BM-Dataset
+% Submitted by *Prasannjeet Singh*
+%
+% <html>
+%   <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+% </html>
+%
+%% 1. Plotting the Dataset
+% Note that I have used only 10,000 datasets to reduce the time taken to
+% run the project. However, I have also performed the same with complete
+% dataset and saved the result. Those are also displayed at the bottom.
+
+% Loading the dataset
+load BM.mat
+% Cropping the dataset to first ten thousand items
+X = batmanX(1:10000,:);
+Y = num2cell(num2str(batmany(1:10000,:)));
+hFig = figure(1);
+gscatter(X(:,1),X(:,2),Y);
+title('Scatter Diagram of Batman (Partial Data)');
+axis tight;
+snapnow;
+close(hFig);
+
+%% 2. Running *fitcsvm()* with chosen hyperparameters
+% Following hyperparameters were used to make the decision boundary as
+% precise without taking much time:
+%
+% # KernelFunction: gaussian
+% # BoxConstant: 1
+% # KernelScale: 1
+
+classes = unique(Y);
+rng(1); % For reproducibility
+SVMModels = fitcsvm(X,Y,'KernelFunction','gaussian','BoxConstraint',1,'KernelScale',1.5);
+
+%% 3. Plotting Decision Boundary
+% Creating a Mesh-Grid (x-y axis) from min value of x to max value of x
+% with a separation of 0.02:
+
+d = 0.02;
+[x1Grid,x2Grid] = meshgrid(min(X(:,1)):d:max(X(:,1)),min(X(:,2)):d:max(X(:,2)));
+xGrid = [x1Grid(:),x2Grid(:)];
+% Predicting for all the values in the mesh grid
+maxScore = predict(SVMModels,xGrid);
+% Plotting the Batman Decision boundary:
+f1 = figure(3);
+gscatter(xGrid(:,1),xGrid(:,2),maxScore,[0.1 0.5 0.5; 0.5 0.1 0.5]);
+title('The Batman Decision Boundary');
+axis tight;
+snapnow;
+close(f1);
+
+%%
+% *Training Error Rate*
+
+trainingError = sum(str2num(cell2mat(predict(SVMModels,X))) ~= batmany(1:10000))
+trainingErrorRate = trainingError/size(X,1)*100
+
+%%
+% Therefore, it can be observed that current model has only 174 errors out
+% of a total of 10000 datasets, with the training error rate of 1.74
+% percent.
+%% 4. Observation with Complete Data:
+% Following hyperparameters were used which made nicer decision boundaries,
+% but took huge time. Note that to make a sharp decision boundary we are
+% basically trying to *overfit* our model. And in that case, we have to
+% impose huge penalty if any point tries to cross the margins. And we can
+% impose higher penalty by increasing the parameter *BoxConstant*. However,
+% an increase in BoxConstant results in increased run time of the
+% algorithm.
+%
+% # KernelFunction: gaussian
+% # BoxConstant: 20
+% # KernelScale: 0.2
+%
+% Loading the data to showcase the results:
+%
+% The data contains both fitcsv model and the predicted solution to make
+% the decision boundary. However, the model will not be used as I have
+% already predicted the boundaries to save time.
+
+load Data/batmodel.mat;
+hFig = figure(4);
+set(hFig, 'Position', [0 0 1500 500]);
+subplot(1,2,1);
+gscatter(batmanX(:,1), batmanX(:,2), batmany);
+title('Scatter for complete Batman data');
+axis tight;
+subplot(1,2,2);
+gscatter(xGrid(:,1),xGrid(:,2),batscore,[0.1 0.5 0.5; 0.5 0.1 0.5]);
+title('Decision boundary with improved hyperparameters');
+axis tight;
+snapnow;
+close(hFig);
+
+%%
+% *Training Error Rate*
+%
+% Since we have tried to overfit the data, we expect lower training error
+% rate than what we got below. Training error rate can be calculate via the
+% following code:
+
+% trainingError = sum(str2num(cell2mat(predict(BatModel,batmanX))) ~= batmany)
+% trainingErrorRate = trainingError/size(batmanX,1)*100
+
+%%
+% However, since it takes time, I have already calculated it and the
+% training error, on a total of 100,000 training set turned out to be only
+% 107, with a training error rate of *0.107%*, which is noticeably lower
+% than our previous calculation.
+
+
+
+
+
+
+
+
+
+
+%%
+
+##### SOURCE END #####
+--></body></html>

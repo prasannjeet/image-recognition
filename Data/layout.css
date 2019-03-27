@@ -1,0 +1,37 @@
+@import url(https://cdn.jsdelivr.net/foundation/6.2.4/foundation.min.css);
+@import url(https://fonts.googleapis.com/css?family=Corben);
+@import url(https://fonts.googleapis.com/css?family=Nobile);
+@import url(https://fonts.googleapis.com/css?family=Ubuntu:bold);
+@import url(https://fonts.googleapis.com/css?family=Space+Mono);
+
+h1 {
+font-family:Ubuntu, Helvetica, Arial, sans-serif;
+font-size:50px;
+line-height:65px;
+color:red;
+}
+
+h2 {
+font-family:Ubuntu, Helvetica, Arial, sans-serif;
+font-size:25px;
+line-height:33px;
+}
+
+p, div li {
+font-family:Nobile, Helvetica, Arial, sans-serif;
+font-size:13px;
+line-height:25px;
+max-width:1000px;
+word-wrap:break-word;
+text-align:justify;
+}
+
+pre.codeinput,pre.codeoutput {
+font-family:'Space Mono', monospace;
+max-width:1000px;
+}
+
+pre.codeoutput {
+background-color:#000;
+color:#FFF;
+}

@@ -1,0 +1,466 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Exercise 2 - Depth control and pruning for Titanic Data</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-14"><meta name="DC.source" content="Exercise2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Exercise 2 - Depth control and pruning for Titanic Data</h1><!--introduction--><p>Submitted by <b>Prasannjeet Singh</b></p><p>
+  <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Q1. Preprocessing and Importing Titanic Data</a></li><li><a href="#2">Q2.1. Depth Control</a></li><li><a href="#7">Q2.2. Pruning</a></li><li><a href="#10">Comparison</a></li></ul></div><h2 id="1">Q1. Preprocessing and Importing Titanic Data</h2><p>If we observe the CSV file, we find that it contains a total of 12 columns with different properties which may or may not be useful for the training of decision trees. Moreover, we can also observe that many cells are empty. It was observed that most (if not all) of the empty sells belonged to the <b>age</b> category. While there was an option to fill the cells with zeroes or something else using some metric, it would still have affected the overall model, as those wouldn't have been the real values. Therefore, it was decided to omit all the rows which had empty cells for age.</p><p>Additionally, there were also some empty cells in the 'Embarked' category. Also in this case, the number of rows were only 2 (was calculated by <i>isnan(table_name)</i>), and therefore, it was also decided to remove those rows.</p><p>Sibsp and Parch Sibsp and Parch respectively denote number of siblings/spouse and number of parents/children. However, there is no reason to believe that people are more likely to survive/not survive if they have more siblings/spouse as compared to parents/children, or vice versa. Therefore, all the relatives were merged to one by adding both these columns into one.</p><p>Reasoning behind choosing variables for decision trees:</p><p><i>Note: The property <b>Pclass</b> is assumed to be the ticket-class of the passenger, where 1: 1st class, 2: 2nd Class and 3: 3rd Class.</i></p><p>Properties like Passenger ID/Name/Ticket ID and Cabin number make no difference in their chances of survival in the titanic, and therefore, these properties were completely removed in the calculation of decision trees. Additionally, it was observed that there are many conflicts in the 'Fare' property in the table. Minimum ticket fare for first class was observed to be 5, however, minimum ticket fare for second class was observed to be 10. Therefore, this property highly conflicts with the 'PClass' property, and I believe that including both 'PClass' and 'Fare' may adversely affect the model, and therefore, I decided to opt out of the 'Fare' property for creating this model. Moreover, a person with a First Class ticket was more likely to be given preference than someone with a Second Class ticket, and the fares of the tickets wouldn't have made any significant difference. The idea is inspired from <a href="https://ind.pn/2K7vH5S">this Independent.co.uk link.</a></p><p>Therefore, finally we are left with the following properties, which will be used in formulating the decision tree:</p><div><ol><li>PClass</li><li>Age</li><li>Sex</li><li>Relatives (Sibsp + Parch)</li><li>Embarked</li></ol></div><p>There are strong reasons to believe that these five properties are highly responsible for the survival or non-survival of a passenger. In case of Age, it is more likely that children were preferred over others. Likewise, women might have had a higher likelihood of being favored over men. <i>Embarked</i> might also have had a slight affect on passenger's survival, as people embarking later may not have gotten their preferred seats/cabins. Properties PClass and Relatives were discussed earlier. All the properties above, after performing the appropriate preprocessing, were stored in a matrix <i>X</i> in the given sequence. The <b>Survived</b> property is indubitably used, and is saved in the solution matrix <i>y</i>.</p><p>All the pre-processing steps are accompanied with comments below:</p><pre class="codeinput"><span class="comment">% Extracting the Import Options object.</span>
+opts = detectImportOptions(<span class="string">'Data/titanic.csv'</span>);
+<span class="comment">% In the Import Options, changing the rule to omit all the rows if a cell</span>
+<span class="comment">% has missing value</span>
+opts.MissingRule = <span class="string">'omitrow'</span>;
+<span class="comment">% Also specifying the number of columns that we need to be imported.</span>
+opts.SelectedVariableNames = [2 3 5 6 7 8 12];
+<span class="comment">% Reading the table according to the import options we created above</span>
+data = readtable(<span class="string">'Data/titanic.csv'</span>,opts);
+<span class="comment">% Adding the 'Sibsp' and 'Parch' columns into one and renaming the column</span>
+<span class="comment">% to 'Relatives'</span>
+data(:,<span class="string">'SibSp'</span>) = array2table(table2array(data(:,<span class="string">'SibSp'</span>)) + table2array<span class="keyword">...</span>
+    (data(:,<span class="string">'Parch'</span>)));
+data(:,<span class="string">'Parch'</span>) = [];
+data.Properties.VariableNames{<span class="string">'SibSp'</span>} = <span class="string">'Relatives'</span>;
+<span class="comment">% Changing the 'Pclass', 'Sex', 'Embarked' and 'Survived' columns into</span>
+<span class="comment">% categorical values.</span>
+data.Pclass = categorical(data.Pclass);
+data.Sex = categorical(data.Sex);
+data.Embarked = categorical(data.Embarked);
+data.Survived = categorical(data.Survived);
+<span class="comment">% Separating a part of data to use it as test</span>
+testData = data(1:100,:);
+data(1:100,:) = [];
+<span class="comment">% Applying fitctree and viewing the tree with default configurations</span>
+tree = fitctree(data,<span class="string">'Survived'</span>); <span class="comment">% Passing tabular parameters in fitctree</span>
+view(tree,<span class="string">'Mode'</span>,<span class="string">'graph'</span>);
+hTree=findall(0,<span class="string">'Tag'</span>,<span class="string">'tree viewer'</span>);
+set(hTree, <span class="string">'Position'</span>, [0 0 1000 500]);
+snapnow;
+close(hTree);
+</pre><img vspace="5" hspace="5" src="Exercise2_01.png" alt=""> <h2 id="2">Q2.1. Depth Control</h2><p>Before we control the depth, first we will decide the opmimal number of splits for the decision tree. As we know, the default value of MaxNumSplits in case of <b>fitctree()</b> is <b>n-1</b>, where n is the size of the sample data, therefore we will run a loop with MaxNumSplits from 1 to n-1 and apply 10-fold cross validation on each model, to find out the MaxNumSplits that gives us the least cost. That will be the value we will choose for our model.</p><p>Calculating the decision tree around 600 times takes a while, and therefore, I have already performed it and saved the result in <b>bestSplit.mat</b>, which I have loaded below:</p><pre class="codeinput"><span class="comment">% Commented code below calculates the bestDepth variable, which is already</span>
+<span class="comment">% calculated and loaded to save time.</span>
+<span class="comment">% k=10;</span>
+<span class="comment">% maxPossibleSplits = size(data,1)-1;</span>
+<span class="comment">% for i = 1:maxPossibleSplits</span>
+<span class="comment">%     fprintf(strcat(num2str(i),'\n\r'));</span>
+<span class="comment">%     mdl = fitctree(data,'Survived','MaxNumSplits',i);</span>
+<span class="comment">%     cvmodel = crossval(mdl,'KFold',k);</span>
+<span class="comment">%     WeightedLoss = kfoldLoss(cvmodel,'lossfun','classiferror','mode','average');</span>
+<span class="comment">%     bestSplit(i,:) = [i WeightedLoss];</span>
+<span class="comment">% end</span>
+
+<span class="comment">% Loading the file and plotting MaxNumSplits vs the Cost</span>
+load <span class="string">'Data/bestSplit.mat'</span>;
+hFig = figure(2);
+plot(bestSplit(:,1), bestSplit(:,2));
+title(<span class="string">'Maximum Number of Splits vs Cost'</span>);
+xlabel(<span class="string">'Number of Splits'</span>);
+ylabel(<span class="string">'Cost'</span>);
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise2_02.png" alt=""> <p>As we can see above, we don't really find a pattern for the cost vs maximum number of splits. Therefore, we will check the top ten split values, which give us the minimum cost below:</p><pre class="codeinput">bestSplit = sortrows(bestSplit,2);
+bestSplit = bestSplit(1:10,:);
+bestSplit = array2table(bestSplit);
+bestSplit.Properties.VariableNames{<span class="string">'bestSplit1'</span>} = <span class="string">'MaxNumSplits'</span>;
+bestSplit.Properties.VariableNames{<span class="string">'bestSplit2'</span>} = <span class="string">'Cost'</span>;
+bestSplit
+</pre><pre class="codeoutput">
+bestSplit =
+
+  10&times;2 table
+
+    MaxNumSplits     Cost  
+    ____________    _______
+
+         10         0.18791
+          7         0.18954
+        518         0.18954
+         21         0.19118
+        409         0.19118
+          6         0.19118
+        601         0.19281
+        228         0.19281
+          5         0.19444
+          8         0.19444
+
+</pre><p>Now if we take a closer look at the data above, we realize that split = 10 gives us lowest cost, however, split = 7 also gives us a considerable amount, with less splits. In this case, had the split value that gives us the least cost been very high, we could have gone for the next best, i.e. 7. But since there is not much difference between number of splits, we will stick to the least cost value, i.e. MaxNumSplits = 10.</p><pre class="codeinput">cmdl = fitctree(data,<span class="string">'Survived'</span>,<span class="string">'MaxNumSplits'</span>,10);
+view(cmdl,<span class="string">'Mode'</span>,<span class="string">'graph'</span>);
+hTree=findall(0,<span class="string">'Tag'</span>,<span class="string">'tree viewer'</span>);
+snapnow;
+close(hTree);
+</pre><img vspace="5" hspace="5" src="Exercise2_03.png" alt=""> <p>Now, if we observe the very first tree that we made (without any splits), we can observe that the maximum number of depth was 15, and generally, the first thing we would want to do is to reduce the depth by half, which is around 7, to make the model simpler. However, after choosing MaxNumSplits as 10, the resultant tree already has a maximum depth of 4, which is much simpler. Therefore, we will consider this as our final model, without choosing the depth again. However, if we were to do it, we could have done it by converting the current dataset to tall data and then applying <b>fitctree()</b> as follows:</p><pre class="language-matlab">m=7
+tallData = tall(data);
+mdl = fitctree(data,<span class="string">'Survived'</span>,<span class="string">'MaxNumSplits'</span>,10,<span class="string">'MaxDepth'</span>,m);
+</pre><p>Since the maximum number of splits has already been finalized, the depths would have been calculated by keeping the splits as 10.</p><p>Nevertheless, I have calculated the final model with maximum split as 10 and saved it as <b>splitModel.mat</b>. The model has already been visualized above. To check the performance, we have chosen first 100 as the test data and the rest as training to find out the total number of erros:</p><pre class="codeinput">clearvars <span class="string">cmdl</span>;
+load <span class="string">Data/splitModel.mat</span>;
+estimatedSurvival = predict(cmdl,testData);
+actualSurvival = categorical(testData.Survived);
+totalErrors = sum(estimatedSurvival ~= actualSurvival)
+</pre><pre class="codeoutput">
+totalErrors =
+
+    26
+
+</pre><p>Therefore, according to the current chosen model, total errors are 20.</p><h2 id="7">Q2.2. Pruning</h2><p>Pruning can directly be performed by comparing all the prune levels and selecting the one which gives us the minimum cross-validated error. This can be done like so:</p><p><i>Note that in this case we will work on the fully grown tree.</i></p><pre class="codeinput">[~,~,~,bestlevel] = cvLoss(tree,<span class="string">'SubTrees'</span>,<span class="string">'All'</span>,<span class="string">'TreeSize'</span>,<span class="string">'min'</span>)
+</pre><pre class="codeoutput">
+bestlevel =
+
+     3
+
+</pre><p>Therefore, according to above, the most optimized prune level is 4.</p><p>We can also find out the best pruning level by checking our test data on each pruning level (0 to 8 in our case), and selecting the one that gives us the least error. This can be done like so:</p><pre class="codeinput">clearvars <span class="string">pruneError</span>;
+<span class="keyword">for</span> i = 0:8
+    prunedTree = prune(tree,<span class="string">'Level'</span>,i);
+    estimatedSurvival = predict(prunedTree,testData);
+    pruneError(i+1,:) = [i sum(estimatedSurvival ~= actualSurvival)];
+<span class="keyword">end</span>
+pruneError = array2table(pruneError);
+pruneError.Properties.VariableNames{<span class="string">'pruneError1'</span>} = <span class="string">'PruneLevel'</span>;
+pruneError.Properties.VariableNames{<span class="string">'pruneError2'</span>} = <span class="string">'TotalErrors'</span>;
+pruneError
+</pre><pre class="codeoutput">
+pruneError =
+
+  9&times;2 table
+
+    PruneLevel    TotalErrors
+    __________    ___________
+
+        0             23     
+        1             22     
+        2             20     
+        3             19     
+        4             18     
+        5             22     
+        6             23     
+        7             21     
+        8             34     
+
+</pre><p>Therefore, as seen above, even in this case, the best prune levels are 3 and 4, which is in concurrence to what we received above by comparing crossvalidated results. Let us choose 4 as the final prune level for the model, and view the pruned tree and error: (The pruned tree model was already created and saved in the folder <i>Data</i>.</p><pre class="codeinput">clearvars <span class="string">prunedTree</span> <span class="string">hTree</span> <span class="string">estimatedSurvival</span> <span class="string">prunedError</span>;
+<span class="comment">% prunedTree = prune(tree,'Level',4);</span>
+<span class="comment">% Loading the already created pruned tree:</span>
+load <span class="string">Data/prunedTree.mat</span>;
+view(prunedTree,<span class="string">'Mode'</span>,<span class="string">'Graph'</span>);
+hTree=findall(0,<span class="string">'Tag'</span>,<span class="string">'tree viewer'</span>);
+snapnow;
+close(hTree);
+estimatedSurvival = predict(prunedTree,testData);
+prunedError = sum(estimatedSurvival ~= actualSurvival)
+</pre><img vspace="5" hspace="5" src="Exercise2_04.png" alt=""> <pre class="codeoutput">
+prunedError =
+
+    18
+
+</pre><h2 id="10">Comparison</h2><p>Total errors in case of MaxSplit = 10 was 23, where as total errors with prune-level-4 was 18. Therefore, we can conclude that for our test data, pruned tree (with prune level 4) performs better.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Exercise 2 - Depth control and pruning for Titanic Data
+% Submitted by *Prasannjeet Singh*
+%
+% <html>
+%   <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+% </html>
+%
+%% Q1. Preprocessing and Importing Titanic Data
+% If we observe the CSV file, we find that it contains a total of 12
+% columns with different properties which may or may not be useful for the
+% training of decision trees. Moreover, we can also observe that many cells
+% are empty. It was observed that most (if not all) of the empty sells
+% belonged to the *age* category. While there was an option to fill the
+% cells with zeroes or something else using some metric, it would still
+% have affected the overall model, as those wouldn't have been the real
+% values. Therefore, it was decided to omit all the rows which had empty
+% cells for age.
+%
+% Additionally, there were also some empty cells in the 'Embarked'
+% category. Also in this case, the number of rows were only 2 (was
+% calculated by _isnan(table_name)_), and therefore, it was also decided to
+% remove those rows.
+%
+% Sibsp and Parch
+% Sibsp and Parch respectively denote number of siblings/spouse and number
+% of parents/children. However, there is no reason to believe that people
+% are more likely to survive/not survive if they have more siblings/spouse
+% as compared to parents/children, or vice versa. Therefore, all the
+% relatives were merged to one by adding both these columns into one.
+%
+% Reasoning behind choosing variables for decision trees:
+%
+% _Note: The property *Pclass* is assumed to be the ticket-class of the
+% passenger, where 1: 1st class, 2: 2nd Class and 3: 3rd Class._
+% 
+% Properties like Passenger ID/Name/Ticket ID and Cabin number make no
+% difference in their chances of survival in the titanic, and therefore,
+% these properties were completely removed in the calculation of decision
+% trees. Additionally, it was observed that there are many conflicts in the
+% 'Fare' property in the table. Minimum ticket fare for first class was
+% observed to be 5, however, minimum ticket fare for second class was
+% observed to be 10. Therefore, this property highly conflicts with the
+% 'PClass' property, and I believe that including both 'PClass' and 'Fare'
+% may adversely affect the model, and therefore, I decided to opt out of
+% the 'Fare' property for creating this model. Moreover, a person with a
+% First Class ticket was more likely to be given preference than someone
+% with a Second Class ticket, and the fares of the tickets wouldn't have
+% made any significant difference. The idea is inspired from
+% <https://ind.pn/2K7vH5S this Independent.co.uk link.>
+%
+% Therefore, finally we are left with the following properties, which will
+% be used in formulating the decision tree:
+%
+% # PClass
+% # Age
+% # Sex
+% # Relatives (Sibsp + Parch)
+% # Embarked
+%
+% There are strong reasons to believe that these five properties are highly
+% responsible for the survival or non-survival of a passenger. In case of
+% Age, it is more likely that children were preferred over
+% others. Likewise, women might have had a higher likelihood of being
+% favored over men. _Embarked_ might also have had a slight affect on
+% passenger's survival, as people embarking later may not have gotten their
+% preferred seats/cabins. Properties PClass and Relatives were discussed
+% earlier. All the properties above, after performing the appropriate
+% preprocessing, were stored in a matrix _X_ in the given sequence. The
+% *Survived* property is indubitably used, and is saved in the solution
+% matrix _y_.
+%
+% All the pre-processing steps are accompanied with comments below:
+
+% Extracting the Import Options object.
+opts = detectImportOptions('Data/titanic.csv');
+% In the Import Options, changing the rule to omit all the rows if a cell
+% has missing value
+opts.MissingRule = 'omitrow';
+% Also specifying the number of columns that we need to be imported.
+opts.SelectedVariableNames = [2 3 5 6 7 8 12];
+% Reading the table according to the import options we created above
+data = readtable('Data/titanic.csv',opts);
+% Adding the 'Sibsp' and 'Parch' columns into one and renaming the column
+% to 'Relatives'
+data(:,'SibSp') = array2table(table2array(data(:,'SibSp')) + table2array...
+    (data(:,'Parch')));
+data(:,'Parch') = [];
+data.Properties.VariableNames{'SibSp'} = 'Relatives';
+% Changing the 'Pclass', 'Sex', 'Embarked' and 'Survived' columns into
+% categorical values.
+data.Pclass = categorical(data.Pclass);
+data.Sex = categorical(data.Sex);
+data.Embarked = categorical(data.Embarked);
+data.Survived = categorical(data.Survived);
+% Separating a part of data to use it as test
+testData = data(1:100,:);
+data(1:100,:) = [];
+% Applying fitctree and viewing the tree with default configurations
+tree = fitctree(data,'Survived'); % Passing tabular parameters in fitctree
+view(tree,'Mode','graph');
+hTree=findall(0,'Tag','tree viewer');
+set(hTree, 'Position', [0 0 1000 500]);
+snapnow;
+close(hTree);
+
+%% Q2.1. Depth Control
+% Before we control the depth, first we will decide the opmimal number of
+% splits for the decision tree. As we know, the default value of
+% MaxNumSplits in case of *fitctree()* is *n-1*, where n is the size of the
+% sample data, therefore we will run a loop with MaxNumSplits from 1 to n-1
+% and apply 10-fold cross validation on each model, to find out the
+% MaxNumSplits that gives us the least cost. That will be the value we will
+% choose for our model.
+%
+% Calculating the decision tree around 600 times takes a while, and therefore, I
+% have already performed it and saved the result in *bestSplit.mat*, which
+% I have loaded below:
+
+% Commented code below calculates the bestDepth variable, which is already
+% calculated and loaded to save time.
+% k=10;
+% maxPossibleSplits = size(data,1)-1;
+% for i = 1:maxPossibleSplits
+%     fprintf(strcat(num2str(i),'\n\r'));
+%     mdl = fitctree(data,'Survived','MaxNumSplits',i);
+%     cvmodel = crossval(mdl,'KFold',k);
+%     WeightedLoss = kfoldLoss(cvmodel,'lossfun','classiferror','mode','average');
+%     bestSplit(i,:) = [i WeightedLoss];
+% end
+
+% Loading the file and plotting MaxNumSplits vs the Cost
+load 'Data/bestSplit.mat';
+hFig = figure(2);
+plot(bestSplit(:,1), bestSplit(:,2));
+title('Maximum Number of Splits vs Cost');
+xlabel('Number of Splits');
+ylabel('Cost');
+snapnow;
+close(hFig);
+
+%%
+% As we can see above, we don't really find a pattern for the cost vs
+% maximum number of splits. Therefore, we will check the top ten split
+% values, which give us the minimum cost below:
+
+bestSplit = sortrows(bestSplit,2);
+bestSplit = bestSplit(1:10,:);
+bestSplit = array2table(bestSplit);
+bestSplit.Properties.VariableNames{'bestSplit1'} = 'MaxNumSplits';
+bestSplit.Properties.VariableNames{'bestSplit2'} = 'Cost';
+bestSplit
+
+%%
+% Now if we take a closer look at the data above, we realize that split =
+% 10 gives us lowest cost, however, split = 7 also gives us a considerable
+% amount, with less splits. In this case, had the split value that gives us
+% the least cost been very high, we could have gone for the next best, i.e.
+% 7. But since there is not much difference between number of splits, we
+% will stick to the least cost value, i.e. MaxNumSplits = 10.
+
+cmdl = fitctree(data,'Survived','MaxNumSplits',10);
+view(cmdl,'Mode','graph');
+hTree=findall(0,'Tag','tree viewer');
+snapnow;
+close(hTree);
+
+%%
+% Now, if we observe the very first tree that we made (without any splits),
+% we can observe that the maximum number of depth was 15, and generally,
+% the first thing we would want to do is to reduce the depth by half, which
+% is around 7, to make the model simpler. However, after choosing
+% MaxNumSplits as 10, the resultant tree already has a maximum depth of 4,
+% which is much simpler. Therefore, we will consider this as our final
+% model, without choosing the depth again. However, if we were to do it, we
+% could have done it by converting the current dataset to tall data and
+% then applying *fitctree()* as follows:
+% 
+%   m=7
+%   tallData = tall(data);
+%   mdl = fitctree(data,'Survived','MaxNumSplits',10,'MaxDepth',m);
+% 
+% Since the maximum number of splits has already been finalized,
+% the depths would have been calculated by keeping the splits as 10.
+%
+% Nevertheless, I have calculated the final model with maximum split as
+% 10 and saved it as *splitModel.mat*. The model has already been
+% visualized above. To check the performance, we have chosen first 100 as
+% the test data and the rest as training to find out the total number of
+% erros:
+
+clearvars cmdl;
+load Data/splitModel.mat;
+estimatedSurvival = predict(cmdl,testData);
+actualSurvival = categorical(testData.Survived);
+totalErrors = sum(estimatedSurvival ~= actualSurvival)
+
+%%
+% Therefore, according to the current chosen model, total errors are 20.
+
+%% Q2.2. Pruning
+% Pruning can directly be performed by comparing all the prune levels and
+% selecting the one which gives us the minimum cross-validated error. This
+% can be done like so:
+%
+% _Note that in this case we will work on the fully grown tree._
+
+[~,~,~,bestlevel] = cvLoss(tree,'SubTrees','All','TreeSize','min')
+
+%%
+% Therefore, according to above, the most optimized prune level is 4.
+%
+% We can also find out the best pruning level by checking our test data on
+% each pruning level (0 to 8 in our case), and selecting the one that gives us the least error.
+% This can be done like so:
+
+clearvars pruneError;
+for i = 0:8
+    prunedTree = prune(tree,'Level',i); 
+    estimatedSurvival = predict(prunedTree,testData);
+    pruneError(i+1,:) = [i sum(estimatedSurvival ~= actualSurvival)];
+end
+pruneError = array2table(pruneError);
+pruneError.Properties.VariableNames{'pruneError1'} = 'PruneLevel';
+pruneError.Properties.VariableNames{'pruneError2'} = 'TotalErrors';
+pruneError
+
+%%
+% Therefore, as seen above, even in this case, the best prune levels are 3
+% and 4, which is in concurrence to what we received above by comparing
+% crossvalidated results. Let us choose 4 as the final prune level for the
+% model, and view the pruned tree and error: (The pruned tree model was
+% already created and saved in the folder _Data_.
+
+clearvars prunedTree hTree estimatedSurvival prunedError;
+% prunedTree = prune(tree,'Level',4); 
+% Loading the already created pruned tree:
+load Data/prunedTree.mat;
+view(prunedTree,'Mode','Graph');
+hTree=findall(0,'Tag','tree viewer');
+snapnow;
+close(hTree);
+estimatedSurvival = predict(prunedTree,testData);
+prunedError = sum(estimatedSurvival ~= actualSurvival)
+
+%% Comparison
+% Total errors in case of MaxSplit = 10 was 23, where as total errors with
+% prune-level-4 was 18. Therefore, we can conclude that for our test data,
+% pruned tree (with prune level 4) performs better.
+##### SOURCE END #####
+--></body></html>
