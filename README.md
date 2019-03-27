@@ -32,11 +32,11 @@ For normalizing the data between 0 and 1, the following formula was
 used:
 
 ![\$\$z\_i = \\frac{x\_i - min(x)}{max(x) -
-min(x)}\$\$](Exercise5_eq14804764601566062396.png)
+min(x)}\$\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq14804764601566062396.png)
 
-Where ![\$x\$](Exercise5_eq12428413953531653171.png) is the vector, and
-![\$z\_i\$](Exercise5_eq10694150929292851306.png) is the normalized
-value for the element ![\$x\_i\$](Exercise5_eq08383031602117067423.png).
+Where ![\$x\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq12428413953531653171.png) is the vector, and
+![\$z\_i\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq10694150929292851306.png) is the normalized
+value for the element ![\$x\_i\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq08383031602117067423.png).
 This can easily be obtained by using the function **mat2gray(x)**.
 
 Also, if we treat this dataset like any other dataset, we can observe
@@ -116,7 +116,7 @@ calculatedAnswer =
      8     1     9
 ```
 
-![](Exercise5_01.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_01.png)
 
 As we can observe from the observation above, although the accuracy of
 the model appeared to be 93 percent, even simple handwritings were
@@ -168,12 +168,12 @@ and **KernelScale**. My interpretation of the parameters:
 </div>
 
 ``` {.codeinput}
-[I,map] = imread('Data\badHandWriting.PNG','png');
+[I,map] = imread('Data\badHandWriting.PNG',https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/'png');
 imshow(I,map);
 snapnow;
 ```
 
-![](Exercise5_02.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_02.png)
 
 Here, the first image is 2, and the second is 6. These are clearly some
 outliers, and a lower value of C will give less weightage to these types
@@ -184,25 +184,25 @@ of data sets.
 -   KernelScale (Gamma): We know that Gaussian Rdial Basis Function is:
     ![\$K\\left(x\_i,x\_j\\right) = exp\\left(- \\gamma\|\|x\_i -
     x\_j\|\|\^2\\right), \\gamma \>
-    0\$](Exercise5_eq14973774818574534740.png). Since
-    ![\$\\gamma\$](Exercise5_eq17096441642737911057.png) controls the
+    0\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq14973774818574534740.png). Since
+    ![\$\\gamma\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq17096441642737911057.png) controls the
     similarity, and if
-    ![\$\\gamma\$](Exercise5_eq17096441642737911057.png) is (let\'s say)
+    ![\$\\gamma\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq17096441642737911057.png) is (let\'s say)
     0, all the points will be treated as same. Likewise, if
-    ![\$\\gamma\$](Exercise5_eq17096441642737911057.png) is set to
-    ![\$\\infty\$](Exercise5_eq16739024125614530807.png), K(x,y) will be
+    ![\$\\gamma\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq17096441642737911057.png) is set to
+    ![\$\\infty\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq16739024125614530807.png), K(x,y) will be
     1 if and only if x and y are identical, otherwise, it will be zero,
     i.e. the model will predict correctly only when the exact input (as
     in the training set) is provided. In other words, high
-    ![\$\\gamma\$](Exercise5_eq17096441642737911057.png) may result in
+    ![\$\\gamma\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq17096441642737911057.png) may result in
     low variance and vice versa. Considering this, we can say that
-    ![\$\\gamma\$](Exercise5_eq17096441642737911057.png) should be more,
+    ![\$\\gamma\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq17096441642737911057.png) should be more,
     so that we can create a distinction between all the classes.
     Moreover, it should also be more because sometimes digits such as 9
     and 4 look familiar in natural handwritings of different people.
     Such confusions can be there for many other pairs as well,
     therefore, it is important to have a comparatively higher value of
-    ![\$\\gamma\$](Exercise5_eq17096441642737911057.png) so that a
+    ![\$\\gamma\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq17096441642737911057.png) so that a
     distinction can be maintained between them. However, it shouldn\'t
     be too high so that even a slight change in handwriting results in
     misclassification.
@@ -277,7 +277,7 @@ above model. If we calculate the percentage, it comes out to be:
 
 This value is better than my previous calculation in Assignment 2, where
 I got accuracy of 96.9% using k-NN (k=25) and 91.98% using Logistic
-Regression (![\$\\lambda\$](Exercise5_eq07657233533591063549.png)=1).
+Regression (![\$\\lambda\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_eq07657233533591063549.png)=1).
 Moreover, it is very near to 98.84 percent, which is average human
 accuracy. (Difference of only 0.4 percent or 40 observations). Note that
 further tuning can also be done by running k from 5 to 7 (divided in 100
@@ -318,7 +318,7 @@ calculatedAnswer =
     10     2     8
 ```
 
-![](Exercise5_03.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_03.png)
 
 **About the above observation:** As we can see the image above almost
 all of them (except 4 in the first row and 8 in ithe last row) are hard
@@ -353,7 +353,7 @@ end
 imshow(I,map);
 ```
 
-![](Exercise5_04.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise5_04.png)
 
 In the confusion matrix above, the labes in the Y-Axis are our
 **Calculated Values** from the model, where as the labels in the X-Axis
@@ -428,7 +428,7 @@ Decision tree for classification
 11  class = 1
 ```
 
-![](Exercise1_01.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise1_01.png)
 
 Q2. Decision Boundary {#2}
 ---------------------
@@ -455,7 +455,7 @@ legend('Yellow - 1 | Blue - 0');
 snapnow; close(hFig);
 ```
 
-![](Exercise1_02.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise1_02.png)
 
 **What is the characteristic for the decision boundary of a tree?
 Conceptually, can you obtain any kind of decision boundary using
@@ -499,9 +499,9 @@ specified by \'LossFun\',\'classiferror\'. It is the weighted fraction
 of misclassified observations, with the equation:
 
 ![\$\$L = \\sum\_{j=1}\^n {w\_j I \\big\\{\\widehat{y\_j} \\neq y\_j
-\\big\\} }\$\$](Exercise1_eq03196131173537897014.png)
+\\big\\} }\$\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise1_eq03196131173537897014.png)
 
-Where ![\$\\widehat{y}\_j\$](Exercise1_eq02832347711439461536.png) is
+Where ![\$\\widehat{y}\_j\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise1_eq02832347711439461536.png) is
 the class label corresponding to the class with the maximal posterior
 probability. I{x} is the indicator function. (Taken from [this
 link](https://se.mathworks.com/help/stats/classificationpartitionedmodel.kfoldloss.html#bswic2v-2)
@@ -548,7 +548,7 @@ hTree=findall(0,'Tag','tree viewer');
 close(hTree);
 ```
 
-![](Exercise1_03.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise1_03.png)
 
 Visualizing by the **Decision Boundary**:
 
@@ -560,7 +560,7 @@ legend('Yellow - 1 | Blue - 0');
 snapnow; close(hFig);
 ```
 
-![](Exercise1_04.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise1_04.png)
 
 **k-Fold Cross Validation**
 
@@ -718,7 +718,7 @@ snapnow;
 close(hTree);
 ```
 
-![](Exercise2_01.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise2_01.png)
 
 Q2.1. Depth Control {#2}
 -------------------
@@ -759,7 +759,7 @@ snapnow;
 close(hFig);
 ```
 
-![](Exercise2_02.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise2_02.png)
 
 As we can see above, we don\'t really find a pattern for the cost vs
 maximum number of splits. Therefore, we will check the top ten split
@@ -809,7 +809,7 @@ snapnow;
 close(hTree);
 ```
 
-![](Exercise2_03.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise2_03.png)
 
 Now, if we observe the very first tree that we made (without any
 splits), we can observe that the maximum number of depth was 15, and
@@ -928,7 +928,7 @@ estimatedSurvival = predict(prunedTree,testData);
 prunedError = sum(estimatedSurvival ~= actualSurvival)
 ```
 
-![](Exercise2_04.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise2_04.png)
 
 ``` {.codeoutput}
 prunedError =
@@ -961,12 +961,12 @@ Contents
 Q1. Calculating the perpendicular distance: {#1}
 -------------------------------------------
 
-If ![\$ax+by+c=0\$](Exercise3_eq00242236477706248943.png) is the
+If ![\$ax+by+c=0\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise3_eq00242236477706248943.png) is the
 equation of the hyperplane, and one of the support vector point is
-![\$(p,q)\$](Exercise3_eq11475799023219699482.png), then the distance
+![\$(p,q)\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise3_eq11475799023219699482.png), then the distance
 was calculated by:
 
-![\$\$\\frac{\|ap+bq+c\|}{\\sqrt{a\^2+b\^2}}\$\$](Exercise3_eq16669572657172333325.png)
+![\$\$\\frac{\|ap+bq+c\|}{\\sqrt{a\^2+b\^2}}\$\$](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise3_eq16669572657172333325.png)
 
 This has been implemented in the file **mmcPlot.m** at the designated
 place.
@@ -990,7 +990,7 @@ and constraints are satisfied to within the default value of the constraint tole
 
 ```
 
-![](Exercise3_01.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise3_01.png)
 
 Q2. Appending \[-1 2\] {#2}
 ----------------------
@@ -1013,7 +1013,7 @@ and constraints are satisfied to within the default value of the constraint tole
 
 ```
 
-![](Exercise3_02.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise3_02.png)
 
 **Observation**
 
@@ -1068,7 +1068,7 @@ snapnow;
 close(hFig);
 ```
 
-![](Exercise4_01.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise4_01.png)
 
 2. Running **fitcsvm()** with chosen hyperparameters {#2}
 ----------------------------------------------------
@@ -1111,7 +1111,7 @@ snapnow;
 close(f1);
 ```
 
-![](Exercise4_02.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise4_02.png)
 
 **Training Error Rate**
 
@@ -1176,7 +1176,7 @@ snapnow;
 close(hFig);
 ```
 
-![](Exercise4_03.png)
+![](https://github.com/prasannjeet/image-recognition/blob/master/publishedHTML-Files/Exercise4_03.png)
 
 **Training Error Rate**
 
