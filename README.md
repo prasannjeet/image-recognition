@@ -4,6 +4,8 @@
 
 Exercise 5 - Hand-Written Digit Recognition
 ===========================================
+Note: My previous work on Image Recognition can be found [here](https://github.com/prasannjeet/linear-logistic-regression).
+
 
 Contents
 --------
